@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us — Creative Minds Resource</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --navy:    #0A0E27;
+      --navy2:   #111533;
+      --navy3:   #161b3d;
+      --white:   #FFFFFF;
+      --off:     #F7F7F4;
+      --orange:  #FF6B35;
+      --mint:    #00C9A7;
+      --purple:  #7B61FF;
+      --gray:    #8892A4;
+      --border:  rgba(255,255,255,0.08);
+      --font-display: 'Plus Jakarta Sans', sans-serif;
+      --font-body:    'Inter', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+      --radius: 16px;
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); background: var(--navy); color: var(--white); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    button { cursor: pointer; font-family: var(--font-body); border: none; }
+
+    /* ── PRELOADER ── */
+    #preloader {
+      position: fixed; inset: 0; background: var(--navy);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #preloader.hidden { opacity: 0; visibility: hidden; }
+    .pre-inner { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .pre-rings {
+      position: relative; width: 52px; height: 52px;
+    }
+    .pre-rings::before, .pre-rings::after {
+      content: ''; position: absolute; inset: 0;
+      border-radius: 50%; border: 2px solid transparent;
+    }
+    .pre-rings::before {
+      border-top-color: var(--orange);
+      animation: spin 1s linear infinite;
+    }
+    .pre-rings::after {
+      border-bottom-color: var(--mint);
+      animation: spin 1.4s linear infinite reverse;
+      inset: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .pre-label { font-family: var(--font-mono); font-size: 0.72rem; color: var(--gray); letter-spacing: 0.14em; text-transform: uppercase; }
+    .pre-track { width: 160px; height: 2px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .pre-fill { height: 100%; background: linear-gradient(90deg, var(--orange), var(--mint)); width: 0%; border-radius: 99px; transition: width 1.3s cubic-bezier(0.4,0,0.2,1) 0.1s; }
+    .pre-fill.go { width: 100%; }
+
+    /* ── NAV ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 clamp(20px,5vw,80px); height: 72px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,14,39,0.9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; }
+    .nav-logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg,var(--orange),#ff9a5c); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 500; color: #fff; flex-shrink: 0; }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { font-size: 0.88rem; font-weight: 500; color: var(--gray); transition: color var(--transition); }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a.active { color: var(--mint); }
+    .nav-cta { background: var(--orange); color: #fff; padding: 10px 22px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; transition: background var(--transition), transform var(--transition); }
+    .nav-cta:hover { background: #e05a28; transform: translateY(-1px); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; padding: 6px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; }
+    .mobile-menu { display: none; position: fixed; top: 72px; left: 0; right: 0; background: var(--navy2); border-bottom: 1px solid var(--border); padding: 24px clamp(20px,5vw,80px); z-index: 99; flex-direction: column; gap: 20px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 1rem; font-weight: 500; color: var(--gray); transition: color var(--transition); }
+    .mobile-menu a:hover { color: var(--white); }
+    .mobile-menu .nav-cta { align-self: flex-start; }
+
+    /* ── EYEBROW ── */
+    .eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mint); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .eyebrow::before { content: ''; display: block; width: 24px; height: 1px; background: var(--mint); }
+    .eyebrow.center { justify-content: center; }
+    .eyebrow.center::before { display: none; }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      padding: 150px clamp(20px,5vw,80px) 100px;
+      position: relative; overflow: hidden; text-align: center;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 50% 30%, rgba(0,201,167,0.1) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(123,97,255,0.07) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 70% at 50% 50%,black 0%,transparent 100%);
+    }
+    .hero-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+    .hero-inner h1 { font-family: var(--font-display); font-size: clamp(2.6rem,5vw,4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 20px; }
+    .hero-inner h1 em { font-style: normal; color: var(--mint); }
+    .hero-inner p { font-size: 1.1rem; color: var(--gray); line-height: 1.75; max-width: 580px; margin: 0 auto 40px; }
+
+    /* animated counter strip inside hero */
+    .hero-stats {
+      display: flex; justify-content: center; gap: 0;
+      flex-wrap: wrap;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden; margin-top: 52px;
+      background: var(--navy2);
+    }
+    .hstat {
+      flex: 1; min-width: 140px;
+      padding: 28px 20px; text-align: center;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+    .hstat:last-child { border-right: none; }
+    .hstat-num {
+      font-family: var(--font-display);
+      font-size: clamp(2rem,3.5vw,2.8rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      line-height: 1; display: block; margin-bottom: 6px;
+    }
+    .hstat-label { font-size: 0.78rem; color: var(--gray); }
+
+    /* ── STORY ── */
+    .story-section { padding: 100px clamp(20px,5vw,80px); }
+    .story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .story-text h2 { font-family: var(--font-display); font-size: clamp(2rem,3.5vw,2.8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 24px; }
+    .story-text h2 em { font-style: normal; color: var(--mint); }
+    .story-text p { font-size: 0.95rem; color: var(--gray); line-height: 1.8; margin-bottom: 18px; }
+    .story-text p:last-of-type { margin-bottom: 0; }
+
+    .story-visual { display: flex; flex-direction: column; gap: 16px; }
+    .timeline-card {
+      background: var(--navy2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px 28px;
+      display: flex; gap: 20px; align-items: flex-start;
+      transition: border-color var(--transition);
+    }
+    .timeline-card:hover { border-color: rgba(0,201,167,0.3); }
+    .tl-year {
+      font-family: var(--font-mono); font-size: 0.78rem;
+      font-weight: 500; color: var(--mint);
+      background: rgba(0,201,167,0.1); border: 1px solid rgba(0,201,167,0.2);
+      padding: 4px 10px; border-radius: 6px;
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .tl-body h4 { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; margin-bottom: 5px; }
+    .tl-body p { font-size: 0.82rem; color: var(--gray); line-height: 1.6; }
+
+    /* ── MISSION & VALUES ── */
+    .mission-section {
+      background: var(--navy2); border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 100px clamp(20px,5vw,80px);
+    }
+    .mission-header { text-align: center; margin-bottom: 64px; }
+    .mission-header h2 { font-family: var(--font-display); font-size: clamp(1.8rem,3.5vw,2.8rem); font-weight: 800; letter-spacing: -0.03em; margin-top: 14px; }
+    .mission-header h2 em { font-style: normal; color: var(--orange); }
+    .mission-header p { font-size: 1rem; color: var(--gray); max-width: 520px; margin: 14px auto 0; line-height: 1.7; }
+
+    .mission-big {
+      background: var(--navy); border: 1px solid var(--border);
+      border-radius: calc(var(--radius)*1.5); padding: 48px;
+      text-align: center; margin-bottom: 40px;
+      position: relative; overflow: hidden;
+    }
+    .mission-big::before {
+      content: '"';
+      position: absolute; top: -20px; left: 32px;
+      font-size: 10rem; font-family: var(--font-display); font-weight: 800;
+      color: rgba(255,107,53,0.06); line-height: 1; pointer-events: none;
+    }
+    .mission-big p {
+      font-family: var(--font-display);
+      font-size: clamp(1.2rem,2.5vw,1.7rem);
+      font-weight: 700; line-height: 1.5;
+      max-width: 680px; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .mission-big p em { font-style: normal; color: var(--orange); }
+
+    .values-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .value-card {
+      background: var(--navy); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px;
+      transition: transform var(--transition), border-color var(--transition);
+    }
+    .value-card:hover { transform: translateY(-4px); border-color: rgba(255,107,53,0.25); }
+    .value-icon { font-size: 1.8rem; margin-bottom: 16px; }
+    .value-card h3 { font-family: var(--font-display); font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .value-card p { font-size: 0.84rem; color: var(--gray); line-height: 1.65; }
+
+    /* ── GLOBAL PRESENCE ── */
+    .global-section { padding: 100px clamp(20px,5vw,80px); }
+    .global-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .global-text h2 { font-family: var(--font-display); font-size: clamp(1.8rem,3.5vw,2.8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 16px; }
+    .global-text h2 em { font-style: normal; color: var(--orange); }
+    .global-text p { font-size: 0.95rem; color: var(--gray); line-height: 1.75; margin-bottom: 32px; }
+
+    .country-cards { display: flex; flex-direction: column; gap: 12px; }
+    .country-card {
+      background: var(--navy2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 20px 24px;
+      display: grid; grid-template-columns: auto 1fr auto;
+      align-items: center; gap: 16px;
+      transition: border-color var(--transition);
+    }
+    .country-card:hover { border-color: rgba(255,255,255,0.2); }
+    .cc-flag { font-size: 1.8rem; }
+    .cc-info h4 { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+    .cc-info p { font-size: 0.78rem; color: var(--gray); }
+    .cc-stat {
+      text-align: right;
+    }
+    .cc-stat strong { display: block; font-family: var(--font-display); font-size: 1.2rem; font-weight: 800; }
+    .cc-stat span { font-size: 0.72rem; color: var(--gray); }
+
+    /* world map svg placeholder */
+    .global-map {
+      background: var(--navy2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 40px;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 320px; position: relative; overflow: hidden;
+    }
+    .map-dots { position: relative; width: 100%; }
+    .map-dot {
+      position: absolute; width: 12px; height: 12px;
+      border-radius: 50%; background: var(--orange);
+      box-shadow: 0 0 0 0 rgba(255,107,53,0.4);
+      animation: mapPulse 2s ease-out infinite;
+    }
+    .map-dot::after {
+      content: attr(data-label);
+      position: absolute; top: -26px; left: 50%; transform: translateX(-50%);
+      font-size: 0.65rem; font-weight: 700; color: var(--white);
+      white-space: nowrap; font-family: var(--font-mono);
+      background: rgba(10,14,39,0.9); padding: 2px 7px; border-radius: 4px;
+    }
+    @keyframes mapPulse {
+      0% { box-shadow: 0 0 0 0 rgba(255,107,53,0.5); }
+      70% { box-shadow: 0 0 0 14px rgba(255,107,53,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,107,53,0); }
+    }
+    .map-dot:nth-child(2) { animation-delay: 0.5s; }
+    .map-dot:nth-child(3) { animation-delay: 1s; }
+    .map-dot:nth-child(4) { animation-delay: 1.5s; }
+
+    /* ── TEAM ── */
+    .team-section {
+      background: var(--navy2); border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 100px clamp(20px,5vw,80px);
+    }
+    .team-header { text-align: center; margin-bottom: 60px; }
+    .team-header h2 { font-family: var(--font-display); font-size: clamp(1.8rem,3.5vw,2.6rem); font-weight: 800; letter-spacing: -0.03em; margin-top: 14px; }
+    .team-header p { font-size: 1rem; color: var(--gray); max-width: 500px; margin: 14px auto 0; line-height: 1.7; }
+
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 20px; }
+    .team-card {
+      background: var(--navy); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px; text-align: center;
+      transition: transform var(--transition), border-color var(--transition);
+    }
+    .team-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.15); }
+    .team-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem;
+      border: 2px solid var(--border);
+    }
+    .av-o { background: rgba(255,107,53,0.12); }
+    .av-m { background: rgba(0,201,167,0.12); }
+    .av-p { background: rgba(123,97,255,0.12); }
+    .av-b { background: rgba(59,155,255,0.12); }
+    .team-card h3 { font-family: var(--font-display); font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .team-card .role { font-size: 0.8rem; color: var(--orange); font-weight: 600; margin-bottom: 10px; }
+    .team-card p { font-size: 0.82rem; color: var(--gray); line-height: 1.6; margin-bottom: 16px; }
+    .team-flag { font-size: 1rem; }
+
+    /* ── JOIN US ── */
+    .join-section { padding: 100px clamp(20px,5vw,80px); }
+    .join-inner {
+      background: var(--navy2); border: 1px solid var(--border);
+      border-radius: calc(var(--radius)*1.5); padding: 64px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .join-glow {
+      position: absolute; top: -60px; right: -60px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(0,201,167,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .join-text { position: relative; z-index: 1; }
+    .join-text h2 { font-family: var(--font-display); font-size: clamp(1.8rem,3vw,2.4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.2; margin-bottom: 14px; }
+    .join-text h2 em { font-style: normal; color: var(--mint); }
+    .join-text p { font-size: 0.95rem; color: var(--gray); line-height: 1.75; }
+
+    .join-options { display: flex; flex-direction: column; gap: 14px; position: relative; z-index: 1; }
+    .join-option {
+      background: var(--navy); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 20px 24px;
+      display: flex; align-items: center; gap: 16px;
+      transition: border-color var(--transition), transform var(--transition);
+      cursor: pointer;
+    }
+    .join-option:hover { border-color: rgba(0,201,167,0.3); transform: translateX(4px); }
+    .jo-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .jo-text h4 { font-family: var(--font-display); font-size: 0.92rem; font-weight: 700; margin-bottom: 3px; }
+    .jo-text p { font-size: 0.8rem; color: var(--gray); }
+    .jo-arrow { margin-left: auto; color: var(--gray); font-size: 1.1rem; transition: color var(--transition); }
+    .join-option:hover .jo-arrow { color: var(--mint); }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--navy2); border-top: 1px solid var(--border);
+      padding: 90px clamp(20px,5vw,80px); text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-glow { position: absolute; inset: 0; z-index: 0; background: radial-gradient(ellipse 50% 80% at 50% 50%,rgba(0,201,167,0.08) 0%,transparent 70%); }
+    .cta-inner { position: relative; z-index: 1; }
+    .cta-inner h2 { font-family: var(--font-display); font-size: clamp(1.8rem,3.5vw,2.8rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 14px; }
+    .cta-inner h2 em { font-style: normal; color: var(--mint); }
+    .cta-inner p { font-size: 1rem; color: var(--gray); max-width: 460px; margin: 0 auto 36px; line-height: 1.7; }
+    .cta-btns { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+
+    .btn-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--orange); color: #fff; padding: 15px 30px; border-radius: 10px; font-size: 0.95rem; font-weight: 700; box-shadow: 0 8px 32px rgba(255,107,53,0.28); transition: all var(--transition); }
+    .btn-primary:hover { background: #e05a28; transform: translateY(-2px); box-shadow: 0 14px 40px rgba(255,107,53,0.38); }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 8px; color: var(--white); padding: 14px 26px; border-radius: 10px; border: 1px solid var(--border); font-size: 0.95rem; font-weight: 600; transition: all var(--transition); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.05); }
+
+    /* ── FOOTER ── */
+    footer { background: var(--navy2); border-top: 1px solid var(--border); padding: 48px clamp(20px,5vw,80px) 28px; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .footer-inner p { font-size: 0.82rem; color: var(--gray); }
+    .footer-inner p span { color: var(--orange); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 0.82rem; color: var(--gray); transition: color var(--transition); }
+    .footer-links a:hover { color: var(--white); }
+
+    /* ── WA FLOAT ── */
+    .wa-float { position: fixed; bottom: 28px; right: 28px; z-index: 200; width: 56px; height: 56px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 32px rgba(37,211,102,0.35); transition: transform var(--transition),box-shadow var(--transition); }
+    .wa-float:hover { transform: scale(1.08) translateY(-2px); box-shadow: 0 12px 40px rgba(37,211,102,0.45); }
+    .wa-float svg { width: 26px; height: 26px; fill: #fff; }
+    .wa-tooltip { position: absolute; right: 68px; background: var(--navy2); color: var(--white); font-size: 0.78rem; font-weight: 600; padding: 6px 12px; border-radius: 8px; white-space: nowrap; border: 1px solid var(--border); pointer-events: none; opacity: 0; transform: translateX(8px); transition: opacity 0.2s ease,transform 0.2s ease; }
+    .wa-float:hover .wa-tooltip { opacity: 1; transform: translateX(0); }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd1 { transition-delay: 0.1s; } .rd2 { transition-delay: 0.2s; } .rd3 { transition-delay: 0.3s; } .rd4 { transition-delay: 0.4s; } .rd5 { transition-delay: 0.5s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .story-grid, .global-grid, .join-inner { grid-template-columns: 1fr; gap: 48px; }
+      .values-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; } .hamburger { display: flex; }
+      .values-grid { grid-template-columns: 1fr; }
+      .hero-stats { flex-direction: column; }
+      .hstat { border-right: none; border-bottom: 1px solid var(--border); }
+      .hstat:last-child { border-bottom: none; }
+      .join-inner { padding: 36px 24px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+  </style>
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <div class="pre-inner">
+      <div class="pre-rings"></div>
+      <div class="pre-label">Our story</div>
+      <div class="pre-track"><div class="pre-fill" id="preBar"></div></div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">&lt;/&gt;</div>
+      Creative Minds
+    </a>
+    <ul class="nav-links">
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="clubs.html">School Clubs</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20register%20for%20a%20class%20at%20Creative%20Minds%20Resource." target="_blank" class="nav-cta">Register Now</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="courses.html">Courses</a>
+    <a href="clubs.html">School Clubs</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20register%20for%20a%20class%20at%20Creative%20Minds%20Resource." target="_blank" class="nav-cta">Register Now</a>
+  </div>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-inner reveal">
+      <div class="eyebrow center">// our story & mission</div>
+      <h1>We exist to close the<br><em>tech skills gap</em> — for good.</h1>
+      <p>Creative Minds Resource was built on one belief: that where a child grows up should never determine whether they get to shape the future of technology.</p>
+      <div class="hero-stats">
+        <div class="hstat">
+          <span class="hstat-num" data-target="500" style="color:var(--orange)">0</span>
+          <div class="hstat-label">Students trained</div>
+        </div>
+        <div class="hstat">
+          <span class="hstat-num" data-target="4" style="color:var(--mint)">0</span>
+          <div class="hstat-label">Countries active</div>
+        </div>
+        <div class="hstat">
+          <span class="hstat-num" data-target="8" style="color:var(--purple)">0</span>
+          <div class="hstat-label">Tech programs</div>
+        </div>
+        <div class="hstat">
+          <span class="hstat-num" data-target="20" style="color:var(--orange)">0</span>
+          <div class="hstat-label">School clubs</div>
+        </div>
+        <div class="hstat">
+          <span class="hstat-num" data-target="2026" style="color:var(--mint)">0</span>
+          <div class="hstat-label">Year (now)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="story-section">
+    <div class="story-grid">
+      <div class="story-text reveal">
+        <div class="eyebrow">// how we started</div>
+        <h2>Built from a frustration.<br>Grown into a <em>movement.</em></h2>
+        <p>Creative Minds Resource started with a simple observation: kids across Nigeria, the UK, North America, and Canada were surrounded by technology — but almost none of them understood how to build it. They were consumers of a world being shaped without them.</p>
+        <p>We started with a single class in Lagos. A handful of curious kids, a laptop, and an instructor who believed that coding could be taught to anyone if the right approach was used. Within a term, those kids had built their first websites. Within a year, we had school clubs running across three cities.</p>
+        <p>By 2026, we operate across four countries, run eight distinct tech programs, and have more than 500 students who have gone through our curriculum. More importantly, those students leave knowing they can build the future — not just live in it.</p>
+      </div>
+
+      <div class="story-visual reveal rd2">
+        <div class="timeline-card">
+          <span class="tl-year">2020</span>
+          <div class="tl-body">
+            <h4>First class in Lagos</h4>
+            <p>A single cohort of 12 students, one instructor, and a Python curriculum written from scratch.</p>
+          </div>
+        </div>
+        <div class="timeline-card">
+          <span class="tl-year">2021</span>
+          <div class="tl-body">
+            <h4>First school club partnership</h4>
+            <p>Greenfield Academy in Lagos became our first school partner. The Robotics Club launched with 18 students.</p>
+          </div>
+        </div>
+        <div class="timeline-card">
+          <span class="tl-year">2022</span>
+          <div class="tl-body">
+            <h4>Expanded to the UK</h4>
+            <p>Our first international cohort launched in London. Web Dev and AI courses added to the curriculum.</p>
+          </div>
+        </div>
+        <div class="timeline-card">
+          <span class="tl-year">2023</span>
+          <div class="tl-body">
+            <h4>US & Canada launch</h4>
+            <p>Partnerships established in Atlanta and Toronto. Student count crossed 200 for the first time.</p>
+          </div>
+        </div>
+        <div class="timeline-card">
+          <span class="tl-year">2025–26</span>
+          <div class="tl-body">
+            <h4>500+ students, 8 programs, 20+ clubs</h4>
+            <p>Full curriculum now live across all four countries, with eight tech programs and over twenty active school clubs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION & VALUES -->
+  <section class="mission-section">
+    <div class="mission-header reveal">
+      <div class="eyebrow center">// mission & values</div>
+      <h2>What we stand for,<br>every single day.</h2>
+    </div>
+
+    <div class="mission-big reveal">
+      <p>Make tech education <em>accessible, exciting, and genuinely impactful</em> for every young mind — regardless of where they live, what they look like, or what their parents do.</p>
+    </div>
+
+    <div class="values-grid">
+      <div class="value-card reveal rd1">
+        <div class="value-icon">🎯</div>
+        <h3>Outcomes over certificates</h3>
+        <p>We measure success by what students build, not by what they can recite. Every course ends with a project — something real, something theirs.</p>
+      </div>
+      <div class="value-card reveal rd2">
+        <div class="value-icon">🌍</div>
+        <h3>Global perspective, local context</h3>
+        <p>Our curriculum reflects what the tech industry actually looks like in 2026 — diverse, distributed, and moving fast across every continent.</p>
+      </div>
+      <div class="value-card reveal rd3">
+        <div class="value-icon">🤝</div>
+        <h3>Community over competition</h3>
+        <p>Our students learn alongside each other, build together, and lift each other up. Tech is better when it's collaborative.</p>
+      </div>
+      <div class="value-card reveal rd1">
+        <div class="value-icon">💡</div>
+        <h3>Curiosity is the curriculum</h3>
+        <p>Every lesson starts with a question students actually have. Curiosity is what got them there, and it's what we protect at all costs.</p>
+      </div>
+      <div class="value-card reveal rd2">
+        <div class="value-icon">🔒</div>
+        <h3>Safety is non-negotiable</h3>
+        <p>Every instructor is vetted. Every environment is safe. Parents and schools trust us with their children and we take that seriously.</p>
+      </div>
+      <div class="value-card reveal rd3">
+        <div class="value-icon">🚀</div>
+        <h3>Ambition is welcome here</h3>
+        <p>We don't cap what kids can achieve. Some of our students have gone on to internships, competitions, and businesses before they finished school.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GLOBAL PRESENCE -->
+  <section class="global-section">
+    <div class="global-grid">
+      <div class="reveal">
+        <div class="eyebrow">// where we operate</div>
+        <h2>Four countries.<br>One <em>standard.</em></h2>
+        <p>Whether a student joins us in Lagos or London, Toronto or Atlanta — the quality of instruction, the depth of curriculum, and the ambition we hold for them is identical.</p>
+
+        <div class="country-cards">
+          <div class="country-card">
+            <span class="cc-flag">🇳🇬</span>
+            <div class="cc-info">
+              <h4>Nigeria</h4>
+              <p>Lagos, Abuja, Port Harcourt</p>
+            </div>
+            <div class="cc-stat">
+              <strong style="color:var(--orange)">250+</strong>
+              <span>students</span>
+            </div>
+          </div>
+          <div class="country-card">
+            <span class="cc-flag">🇬🇧</span>
+            <div class="cc-info">
+              <h4>United Kingdom</h4>
+              <p>London, Manchester, Birmingham</p>
+            </div>
+            <div class="cc-stat">
+              <strong style="color:var(--mint)">120+</strong>
+              <span>students</span>
+            </div>
+          </div>
+          <div class="country-card">
+            <span class="cc-flag">🇺🇸</span>
+            <div class="cc-info">
+              <h4>United States</h4>
+              <p>Atlanta, Houston, New York</p>
+            </div>
+            <div class="cc-stat">
+              <strong style="color:var(--purple)">80+</strong>
+              <span>students</span>
+            </div>
+          </div>
+          <div class="country-card">
+            <span class="cc-flag">🇨🇦</span>
+            <div class="cc-info">
+              <h4>Canada</h4>
+              <p>Toronto, Calgary, Vancouver</p>
+            </div>
+            <div class="cc-stat">
+              <strong style="color:var(--orange)">60+</strong>
+              <span>students</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal rd2">
+        <div class="global-map" style="min-height:380px; flex-direction:column; gap:12px;">
+          <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--gray);letter-spacing:0.1em;margin-bottom:8px;">ACTIVE LOCATIONS — 2026</div>
+          <!-- Simplified SVG world map outline -->
+          <svg viewBox="0 0 600 320" style="width:100%;opacity:0.18;" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 120 Q80 100 120 110 Q160 120 180 140 Q200 160 190 180 Q180 200 160 210 Q140 220 120 200 Q100 180 80 170 Q60 160 55 140 Z" fill="white"/>
+            <path d="M195 130 Q220 110 260 115 Q300 120 310 140 Q320 160 300 175 Q280 190 260 185 Q240 180 220 170 Q200 160 195 145 Z" fill="white"/>
+            <path d="M260 180 Q270 170 285 175 Q300 180 305 195 Q310 210 295 220 Q280 230 265 225 Q250 220 250 205 Q250 190 260 180Z" fill="white"/>
+            <path d="M350 80 Q380 70 410 80 Q440 90 450 110 Q460 130 440 145 Q420 160 400 155 Q380 150 365 135 Q350 120 348 100 Z" fill="white"/>
+            <path d="M420 150 Q440 140 460 150 Q480 160 485 180 Q490 200 470 210 Q450 220 435 210 Q420 200 415 185 Q410 170 420 150Z" fill="white"/>
+            <path d="M480 100 Q510 85 540 90 Q570 95 575 115 Q580 135 560 145 Q540 155 520 148 Q500 140 490 125 Q480 110 480 100Z" fill="white"/>
+          </svg>
+          <!-- Pulsing dots for each country -->
+          <div style="position:relative;width:100%;height:160px;margin-top:-80px;">
+            <!-- Nigeria -->
+            <div class="map-dot" data-label="🇳🇬 Nigeria" style="left:47%;top:52%;background:var(--orange);animation-delay:0s;"></div>
+            <!-- UK -->
+            <div class="map-dot" data-label="🇬🇧 UK" style="left:45%;top:22%;background:var(--mint);animation-delay:0.5s;"></div>
+            <!-- USA -->
+            <div class="map-dot" data-label="🇺🇸 USA" style="left:20%;top:30%;background:var(--purple);animation-delay:1s;"></div>
+            <!-- Canada -->
+            <div class="map-dot" data-label="🇨🇦 Canada" style="left:18%;top:18%;background:#3B9BFF;animation-delay:1.5s;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="team-section">
+    <div class="team-header reveal">
+      <div class="eyebrow center">// the team</div>
+      <h2>People who actually care.</h2>
+      <p>Our instructors are educators first, technologists second — and every one of them was chosen because they know how to make kids fall in love with building things.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal rd1">
+        <div class="team-avatar av-o">👩‍💻</div>
+        <h3>Amaka Osei</h3>
+        <div class="role">Founder & CEO</div>
+        <p>Former software engineer turned educator. Built the original CMR curriculum from scratch after five years in the industry.</p>
+        <div class="team-flag">🇳🇬 Lagos</div>
+      </div>
+      <div class="team-card reveal rd2">
+        <div class="team-avatar av-m">👨‍🏫</div>
+        <h3>Tunde Adeyemi</h3>
+        <div class="role">Head of Curriculum</div>
+        <p>Designs and updates all eight programs. Keeps the curriculum aligned with what tech companies actually hire for in 2026.</p>
+        <div class="team-flag">🇳🇬 Abuja</div>
+      </div>
+      <div class="team-card reveal rd3">
+        <div class="team-avatar av-p">👩‍🔬</div>
+        <h3>Sophie Clarke</h3>
+        <div class="role">UK Operations Lead</div>
+        <p>Manages all UK school partnerships and instructor teams. Ten years of experience in education technology.</p>
+        <div class="team-flag">🇬🇧 London</div>
+      </div>
+      <div class="team-card reveal rd4">
+        <div class="team-avatar av-b">👨‍💼</div>
+        <h3>Marcus Thompson</h3>
+        <div class="role">North America Director</div>
+        <p>Oversees US and Canada expansion. Former edtech startup founder with a deep network in the K-12 space.</p>
+        <div class="team-flag">🇺🇸 Atlanta</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN US -->
+  <section class="join-section">
+    <div class="join-inner reveal">
+      <div class="join-glow"></div>
+      <div class="join-text">
+        <div class="eyebrow">// work with us</div>
+        <h2>Want to be part of<br><em>what we're building?</em></h2>
+        <p>We're always looking for passionate instructors, school partnership leads, and curriculum developers who believe in what we're doing. If that's you, we'd love to hear from you.</p>
+      </div>
+      <div class="join-options">
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27m%20interested%20in%20becoming%20a%20CMR%20instructor." target="_blank" class="join-option">
+          <div class="jo-icon">👩‍🏫</div>
+          <div class="jo-text">
+            <h4>Become an instructor</h4>
+            <p>Teach coding to kids across any of our four countries.</p>
+          </div>
+          <span class="jo-arrow">→</span>
+        </a>
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20partner%20my%20school%20with%20Creative%20Minds%20Resource." target="_blank" class="join-option">
+          <div class="jo-icon">🏫</div>
+          <div class="jo-text">
+            <h4>School partnership</h4>
+            <p>Bring a tech club to your school — we handle everything.</p>
+          </div>
+          <span class="jo-arrow">→</span>
+        </a>
+        <a href="mailto:creative@gmail.com" class="join-option">
+          <div class="jo-icon">💡</div>
+          <div class="jo-text">
+            <h4>Other collaborations</h4>
+            <p>Sponsorships, curriculum partnerships, media enquiries.</p>
+          </div>
+          <span class="jo-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-glow"></div>
+    <div class="cta-inner reveal">
+      <h2>Ready to enrol your<br>child in <em>2026?</em></h2>
+      <p>Message us on WhatsApp and we'll match your child to the right course, schedule, and cohort within 24 hours.</p>
+      <div class="cta-btns">
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20enrol%20my%20child%20at%20Creative%20Minds%20Resource." target="_blank" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.121.553 4.112 1.522 5.844L.057 23.882l6.19-1.623A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.366l-.359-.213-3.724.976.995-3.635-.234-.374A9.818 9.818 0 1112 21.818z"/></svg>
+          Register on WhatsApp
+        </a>
+        <a href="contact.html" class="btn-ghost">View contact options →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <p>© 2026 Creative Minds Resource. All rights reserved. Built with <span>♥</span> for future tech leaders.</p>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="courses.html">Courses</a>
+        <a href="clubs.html">School Clubs</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WA FLOAT -->
+  <a class="wa-float" href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20know%20more%20about%20Creative%20Minds%20Resource." target="_blank" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.121.553 4.112 1.522 5.844L.057 23.882l6.19-1.623A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.366l-.359-.213-3.724.976.995-3.635-.234-.374A9.818 9.818 0 1112 21.818z"/></svg>
+    <span class="wa-tooltip">Chat with us</span>
+  </a>
+
+  <script>
+    // PRELOADER
+    window.addEventListener('load', () => {
+      const bar = document.getElementById('preBar');
+      setTimeout(() => bar.classList.add('go'), 100);
+      setTimeout(() => document.getElementById('preloader').classList.add('hidden'), 1600);
+    });
+
+    // HAMBURGER
+    document.getElementById('hamburger').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    });
+
+    // SCROLL REVEAL
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+
+    // ANIMATED COUNTERS
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target);
+      const duration = 1800;
+      const step = target / (duration / 16);
+      let current = 0;
+      const suffix = target >= 100 ? '+' : '';
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = Math.floor(current) + (current >= target ? suffix : '');
+        if (current >= target) clearInterval(timer);
+      }, 16);
+    }
+
+    const counterObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('[data-target]').forEach(animateCounter);
+          counterObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    const statsEl = document.querySelector('.hero-stats');
+    if (statsEl) counterObserver.observe(statsEl);
+  </script>
+</body>
+</html>
