@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creative Minds Resource — Code. Create. Lead.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─────────────── TOKENS ─────────────── */
+    :root {
+      --navy:    #0A0E27;
+      --navy2:   #111533;
+      --white:   #FFFFFF;
+      --off:     #F7F7F4;
+      --orange:  #FF6B35;
+      --mint:    #00C9A7;
+      --purple:  #7B61FF;
+      --gray:    #8892A4;
+      --border:  rgba(255,255,255,0.08);
+
+      --font-display: 'Plus Jakarta Sans', sans-serif;
+      --font-body:    'Inter', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    /* ─────────────── RESET ─────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    ul { list-style: none; }
+    button { cursor: pointer; font-family: var(--font-body); border: none; }
+
+    /* ─────────────── PRELOADER ─────────────── */
+    #preloader {
+      position: fixed; inset: 0;
+      background: var(--navy);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #preloader.hidden { opacity: 0; visibility: hidden; }
+
+    .pre-wrap {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .pre-bracket {
+      font-family: var(--font-mono);
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 500;
+      color: var(--orange);
+      opacity: 0;
+      transform: translateX(0);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .pre-bracket.left  { transform: translateX(30px); }
+    .pre-bracket.right { transform: translateX(-30px); }
+    .pre-bracket.show  { opacity: 1; transform: translateX(0); }
+
+    .pre-logo {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--white);
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s;
+    }
+    .pre-logo.show { opacity: 1; transform: scale(1); }
+
+    .pre-tag {
+      margin-top: 18px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--mint);
+      letter-spacing: 0.12em;
+      opacity: 0;
+      transition: opacity 0.4s ease 0.6s;
+    }
+    .pre-tag.show { opacity: 1; }
+
+    .pre-bar {
+      margin-top: 36px;
+      width: 160px; height: 2px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .pre-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--orange), var(--mint));
+      width: 0%;
+      border-radius: 99px;
+      transition: width 1.4s cubic-bezier(0.4,0,0.2,1) 0.2s;
+    }
+    .pre-bar-fill.go { width: 100%; }
+
+    /* ─────────────── NAV ─────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 clamp(20px, 5vw, 80px);
+      height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(10,14,39,0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+    .nav-logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--orange), #ff9a5c);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+    }
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--gray);
+      transition: color var(--transition);
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      background: var(--orange);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .nav-cta:hover { background: #e05a28; transform: translateY(-1px); }
+
+    .hamburger {
+      display: none;
+      flex-direction: column; gap: 5px;
+      background: none; padding: 6px;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--white); border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed; top: 72px; left: 0; right: 0;
+      background: var(--navy2);
+      border-bottom: 1px solid var(--border);
+      padding: 24px clamp(20px, 5vw, 80px);
+      z-index: 99;
+      flex-direction: column; gap: 20px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-size: 1rem; font-weight: 500; color: var(--gray);
+      transition: color var(--transition);
+    }
+    .mobile-menu a:hover { color: var(--white); }
+    .mobile-menu .nav-cta { align-self: flex-start; }
+
+    /* ─────────────── HERO ─────────────── */
+    #home {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px clamp(20px, 5vw, 80px) 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(123,97,255,0.12) 0%, transparent 70%),
+                  radial-gradient(ellipse 50% 40% at 20% 80%, rgba(0,201,167,0.08) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 100%);
+    }
+
+    .hero-inner {
+      position: relative; z-index: 1;
+      max-width: 760px;
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,107,53,0.12);
+      border: 1px solid rgba(255,107,53,0.25);
+      padding: 7px 16px;
+      border-radius: 99px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--orange);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .hero-badge span { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; animation: pulse 1.8s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
+
+    .hero-h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+    }
+    .hero-h1 .accent-o { color: var(--orange); }
+    .hero-h1 .accent-m { color: var(--mint); }
+
+    .hero-terminal {
+      font-family: var(--font-mono);
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      color: var(--mint);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 20px;
+      margin-bottom: 28px;
+      display: flex; align-items: center; gap: 10px;
+      width: fit-content;
+    }
+    .hero-terminal::before {
+      content: '>';
+      color: var(--orange);
+      font-weight: 700;
+    }
+    #typed-text { color: var(--mint); }
+    .cursor {
+      display: inline-block; width: 2px; height: 1em;
+      background: var(--mint); margin-left: 2px;
+      animation: blink 0.9s infinite;
+      vertical-align: middle;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    .hero-p {
+      font-size: clamp(1rem, 2vw, 1.1rem);
+      color: var(--gray);
+      line-height: 1.7;
+      max-width: 560px;
+      margin-bottom: 40px;
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--orange);
+      color: #fff;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 8px 32px rgba(255,107,53,0.3);
+    }
+    .btn-primary:hover { background: #e05a28; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(255,107,53,0.4); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--white);
+      padding: 14px 26px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.05); }
+
+    .hero-flags {
+      display: flex; align-items: center; gap: 12px;
+      margin-top: 52px;
+    }
+    .hero-flags span {
+      font-size: 0.78rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+    .flag-wrap {
+      display: flex; gap: 6px;
+    }
+    .flag {
+      width: 30px; height: 22px; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+    }
+
+    .hero-visual {
+      position: absolute;
+      right: clamp(20px, 5vw, 80px);
+      top: 50%;
+      transform: translateY(-50%);
+      width: min(420px, 40vw);
+      display: flex; flex-direction: column; gap: 14px;
+      z-index: 1;
+    }
+
+    .code-card {
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .code-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .code-card.c1::before { background: linear-gradient(90deg, var(--orange), #ff9a5c); }
+    .code-card.c2::before { background: linear-gradient(90deg, var(--mint), #00e5c7); }
+    .code-card.c3::before { background: linear-gradient(90deg, var(--purple), #a591ff); }
+
+    .card-dots {
+      display: flex; gap: 6px; margin-bottom: 14px;
+    }
+    .card-dots i {
+      width: 10px; height: 10px; border-radius: 50%;
+      display: block;
+    }
+    .card-dots i:nth-child(1) { background: #ff5f57; }
+    .card-dots i:nth-child(2) { background: #febc2e; }
+    .card-dots i:nth-child(3) { background: #28c840; }
+
+    .code-line {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.8;
+    }
+    .kw { color: var(--purple); }
+    .fn { color: var(--mint); }
+    .str { color: #ffc87a; }
+    .cm { color: var(--gray); }
+    .num { color: var(--orange); }
+
+    .card-stat {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 14px;
+    }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--white);
+    }
+    .stat-label { font-size: 0.75rem; color: var(--gray); margin-top: 2px; }
+
+    /* ─────────────── STATS STRIP ─────────────── */
+    .stats-strip {
+      background: var(--navy2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 32px clamp(20px, 5vw, 80px);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-item .big {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-item .big .plus { color: var(--orange); }
+    .stat-item p { font-size: 0.82rem; color: var(--gray); }
+
+    /* ─────────────── SECTION COMMONS ─────────────── */
+    section { padding: 100px clamp(20px, 5vw, 80px); }
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--gray);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+    .section-header { margin-bottom: 60px; }
+
+    /* ─────────────── COURSES ─────────────── */
+    #courses { background: var(--off); color: var(--navy); }
+    #courses .section-eyebrow { color: var(--orange); }
+    #courses .section-title { color: var(--navy); }
+    #courses .section-sub { color: #555d6e; }
+
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .course-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 28px;
+      border: 1px solid rgba(0,0,0,0.07);
+      transition: transform var(--transition), box-shadow var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .course-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+    .course-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .course-card.col-o::after { background: var(--orange); }
+    .course-card.col-m::after { background: var(--mint); }
+    .course-card.col-p::after { background: var(--purple); }
+    .course-card.col-b::after { background: #3B9BFF; }
+
+    .course-icon {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 18px;
+    }
+    .ci-o { background: rgba(255,107,53,0.1); }
+    .ci-m { background: rgba(0,201,167,0.1); }
+    .ci-p { background: rgba(123,97,255,0.1); }
+    .ci-b { background: rgba(59,155,255,0.1); }
+
+    .course-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .course-card p {
+      font-size: 0.88rem;
+      color: #6b7587;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+    .course-meta {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px;
+    }
+    .tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 99px;
+      background: var(--off);
+      color: #555;
+    }
+    .course-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--navy);
+      transition: gap var(--transition);
+    }
+    .course-cta:hover { gap: 10px; }
+
+    /* ─────────────── CLUBS ─────────────── */
+    #clubs {
+      background: var(--navy);
+      position: relative; overflow: hidden;
+    }
+    .clubs-glow {
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(123,97,255,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .clubs-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      position: relative; z-index: 1;
+    }
+
+    .clubs-text .section-title .accent { color: var(--purple); }
+
+    .clubs-features {
+      display: flex; flex-direction: column; gap: 20px;
+      margin-top: 36px;
+    }
+    .club-feature {
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .club-feature-icon {
+      width: 42px; height: 42px; flex-shrink: 0;
+      border-radius: 10px;
+      background: rgba(123,97,255,0.12);
+      border: 1px solid rgba(123,97,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .club-feature-text h4 {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .club-feature-text p { font-size: 0.84rem; color: var(--gray); line-height: 1.6; }
+
+    .clubs-card {
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) * 1.5);
+      padding: 36px;
+      position: relative;
+    }
+    .clubs-card-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .clubs-card-sub { font-size: 0.88rem; color: var(--gray); margin-bottom: 28px; }
+    .clubs-programs {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      margin-bottom: 28px;
+    }
+    .cp-item {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    /* ─────────────── ABOUT ─────────────── */
+    #about { background: var(--off); color: var(--navy); }
+    #about .section-title { color: var(--navy); }
+    #about .section-sub { color: #555d6e; }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .mission-block {
+      background: var(--navy);
+      color: var(--white);
+      border-radius: var(--radius);
+      padding: 36px;
+    }
+    .mission-block .section-eyebrow { color: var(--orange); margin-bottom: 14px; }
+    .mission-block h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .mission-block p { font-size: 0.9rem; color: var(--gray); line-height: 1.7; }
+
+    .countries-block { margin-top: 28px; }
+    .countries-block h4 {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 14px;
+    }
+    .country-list {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .country-item {
+      display: flex; align-items: center; gap: 12px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 12px 16px;
+      border: 1px solid rgba(0,0,0,0.06);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .country-item span.flag-e { font-size: 1.1rem; }
+
+    .values-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin-top: 32px;
+    }
+    .value-card {
+      background: #fff;
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .value-card .vi {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+    .value-card h4 {
+      font-family: var(--font-display);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .value-card p { font-size: 0.8rem; color: #6b7587; line-height: 1.5; }
+
+    /* ─────────────── REGISTER / CONTACT ─────────────── */
+    #register { background: var(--navy); position: relative; overflow: hidden; }
+    .reg-glow {
+      position: absolute;
+      bottom: -80px; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(255,107,53,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .reg-inner {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .reg-form {
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) * 1.5);
+      padding: 40px;
+    }
+    .reg-form h3 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .reg-form .sub { font-size: 0.88rem; color: var(--gray); margin-bottom: 32px; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gray);
+      margin-bottom: 8px;
+      letter-spacing: 0.03em;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      color: var(--white);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      transition: border-color var(--transition);
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .form-group input::placeholder { color: rgba(255,255,255,0.25); }
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: rgba(255,107,53,0.5);
+    }
+    .form-group select option { background: var(--navy2); color: var(--white); }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--orange);
+      color: #fff;
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-top: 8px;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 8px 32px rgba(255,107,53,0.25);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-submit:hover { background: #e05a28; transform: translateY(-1px); box-shadow: 0 12px 40px rgba(255,107,53,0.35); }
+
+    .reg-info { display: flex; flex-direction: column; gap: 24px; }
+    .reg-info .section-eyebrow { margin-bottom: 0; }
+    .reg-info .section-title { font-size: clamp(1.8rem, 3vw, 2.4rem); margin-bottom: 12px; }
+    .reg-info .section-sub { margin-bottom: 32px; }
+
+    .contact-items { display: flex; flex-direction: column; gap: 16px; }
+    .contact-item {
+      display: flex; align-items: center; gap: 16px;
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      transition: border-color var(--transition);
+      cursor: pointer;
+    }
+    .contact-item:hover { border-color: rgba(255,255,255,0.2); }
+    .ci-ico {
+      width: 40px; height: 40px; flex-shrink: 0;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .ci-wa { background: rgba(37,211,102,0.12); }
+    .ci-em { background: rgba(59,155,255,0.12); }
+    .contact-item h4 {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gray);
+      margin-bottom: 2px;
+    }
+    .contact-item p { font-size: 0.88rem; font-weight: 600; color: var(--white); }
+
+    /* ─────────────── FOOTER ─────────────── */
+    footer {
+      background: var(--navy2);
+      border-top: 1px solid var(--border);
+      padding: 60px clamp(20px, 5vw, 80px) 32px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 52px;
+    }
+    .footer-brand p {
+      font-size: 0.86rem;
+      color: var(--gray);
+      line-height: 1.7;
+      margin-top: 14px;
+      max-width: 260px;
+    }
+    .footer-col h5 {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--white);
+    }
+    .footer-col ul { display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a {
+      font-size: 0.84rem;
+      color: var(--gray);
+      transition: color var(--transition);
+    }
+    .footer-col ul li a:hover { color: var(--white); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-bottom p {
+      font-size: 0.82rem;
+      color: var(--gray);
+    }
+    .footer-bottom span { color: var(--orange); }
+
+    /* ─────────────── WHATSAPP FLOAT ─────────────── */
+    .wa-float {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      z-index: 200;
+      width: 56px; height: 56px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 32px rgba(37,211,102,0.35);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .wa-float:hover {
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 12px 40px rgba(37,211,102,0.45);
+    }
+    .wa-float svg { width: 26px; height: 26px; fill: #fff; }
+    .wa-tooltip {
+      position: absolute;
+      right: 68px;
+      background: var(--navy2);
+      color: var(--white);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+      border: 1px solid var(--border);
+      pointer-events: none;
+      opacity: 0;
+      transform: translateX(8px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .wa-float:hover .wa-tooltip { opacity: 1; transform: translateX(0); }
+
+    /* ─────────────── SCROLL REVEAL ─────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1),
+                  transform 0.7s cubic-bezier(0.4,0,0.2,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ─────────────── RESPONSIVE ─────────────── */
+    @media (max-width: 1024px) {
+      .hero-visual { display: none; }
+      .hero-inner { max-width: 100%; }
+      .clubs-inner,
+      .about-grid,
+      .reg-inner { grid-template-columns: 1fr; gap: 48px; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .stats-strip { grid-template-columns: repeat(2,1fr); }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 32px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+
+    @media (max-width: 500px) {
+      .stats-strip { grid-template-columns: 1fr 1fr; }
+      .clubs-programs { grid-template-columns: 1fr; }
+      .values-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── PRELOADER ── -->
+  <div id="preloader">
+    <div class="pre-wrap">
+      <div class="pre-bracket left" id="preLeft">&lt;</div>
+      <div class="pre-logo" id="preLogo">CMR</div>
+      <div class="pre-bracket right" id="preRight">/&gt;</div>
+    </div>
+    <div class="pre-tag" id="preTag">Creative Minds Resource</div>
+    <div class="pre-bar"><div class="pre-bar-fill" id="preBar"></div></div>
+  </div>
+
+  <!-- ── NAV ── -->
+  <nav id="navbar">
+    <a href="#home" class="nav-logo">
+      <div class="nav-logo-icon">&lt;/&gt;</div>
+      Creative Minds
+    </a>
+    <ul class="nav-links">
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="clubs.html">School Clubs</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="register.html">Contact</a></li>
+      <li><a href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20register%20for%20a%20class%20at%20Creative%20Minds%20Resource." target="_blank" class="nav-cta">Register Now</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="courses.html" class="mob-link">Courses</a>
+    <a href="clubs.html" class="mob-link">School Clubs</a>
+    <a href="about.html" class="mob-link">About</a>
+    <a href="register.html" class="mob-link">Contact</a>
+    <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20register%20for%20a%20class%20at%20Creative%20Minds%20Resource." target="_blank" class="nav-cta">Register Now</a>
+  </div>
+
+  <!-- ── HERO ── -->
+  <section id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span></span> Now enrolling — Nigeria · USA · UK · Canada
+      </div>
+      <h1 class="hero-h1">
+        Raising the Next<br>
+        Generation of <span class="accent-o">Tech</span><br>
+        <span class="accent-m">Creators.</span>
+      </h1>
+      <div class="hero-terminal">
+        <span id="typed-text"></span><span class="cursor"></span>
+      </div>
+      <p class="hero-p">
+        Creative Minds Resource teaches kids and teenagers to code, build, and innovate — through hands-on courses in Scratch, Python, Web Dev, Robotics, AI, and more.
+      </p>
+      <div class="hero-actions">
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20register%20for%20a%20class%20at%20Creative%20Minds%20Resource." target="_blank" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.121.553 4.112 1.522 5.844L.057 23.882l6.19-1.623A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.366l-.359-.213-3.724.976.995-3.635-.234-.374A9.818 9.818 0 1112 21.818z"/></svg>
+          Register via WhatsApp
+        </a>
+        <a href="#courses" class="btn-ghost">
+          Explore Courses
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="hero-flags">
+        <span>Teaching in</span>
+        <div class="flag-wrap">
+          <div class="flag">🇳🇬</div>
+          <div class="flag">🇺🇸</div>
+          <div class="flag">🇬🇧</div>
+          <div class="flag">🇨🇦</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="code-card c1">
+        <div class="card-dots"><i></i><i></i><i></i></div>
+        <div class="code-line"><span class="kw">def</span> <span class="fn">build_future</span>(kid):</div>
+        <div class="code-line">&nbsp;&nbsp;<span class="cm"># give them tools</span></div>
+        <div class="code-line">&nbsp;&nbsp;<span class="kw">return</span> kid.<span class="fn">code</span>() + kid.<span class="fn">create</span>()</div>
+        <div class="card-stat">
+          <div><div class="stat-num">500<span style="color:var(--orange)">+</span></div><div class="stat-label">Students trained</div></div>
+          <div><div class="stat-num">4</div><div class="stat-label">Countries</div></div>
+        </div>
+      </div>
+      <div class="code-card c2">
+        <div class="card-dots"><i></i><i></i><i></i></div>
+        <div class="code-line"><span class="kw">const</span> skills = [</div>
+        <div class="code-line">&nbsp;&nbsp;<span class="str">"Python"</span>, <span class="str">"Web Dev"</span>,</div>
+        <div class="code-line">&nbsp;&nbsp;<span class="str">"Robotics"</span>, <span class="str">"AI"</span>,</div>
+        <div class="code-line">&nbsp;&nbsp;<span class="str">"Scratch"</span>, <span class="str">"App Dev"</span></div>
+        <div class="code-line">];</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STATS STRIP ── -->
+  <div class="stats-strip">
+    <div class="stat-item reveal">
+      <div class="big">500<span class="plus">+</span></div>
+      <p>Students Trained</p>
+    </div>
+    <div class="stat-item reveal reveal-delay-1">
+      <div class="big">4</div>
+      <p>Countries</p>
+    </div>
+    <div class="stat-item reveal reveal-delay-2">
+      <div class="big">8<span class="plus">+</span></div>
+      <p>Tech Courses</p>
+    </div>
+    <div class="stat-item reveal reveal-delay-3">
+      <div class="big">20<span class="plus">+</span></div>
+      <p>School Clubs</p>
+    </div>
+  </div>
+
+  <!-- ── COURSES ── -->
+  <section id="courses">
+    <div class="section-header reveal">
+      <div class="section-eyebrow">// courses & programs</div>
+      <h2 class="section-title">Skills that shape<br>tomorrow's builders.</h2>
+      <p class="section-sub">Every course is designed for real engagement — not just theory. Kids leave with projects they built themselves.</p>
+    </div>
+    <div class="courses-grid">
+
+      <div class="course-card col-o reveal reveal-delay-1">
+        <div class="course-icon ci-o">🐍</div>
+        <h3>Python Programming</h3>
+        <p>From variables to building real apps — Python teaches logical thinking while making coding genuinely fun.</p>
+        <div class="course-meta">
+          <span class="tag">Ages 10–17</span>
+          <span class="tag">Beginner → Advanced</span>
+        </div>
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27m%20interested%20in%20the%20Python%20Programming%20course." target="_blank" class="course-cta">
+          Enrol now <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="course-card col-m reveal reveal-delay-2">
+        <div class="course-icon ci-m">🌐</div>
+        <h3>Web Development</h3>
+        <p>HTML, CSS, JavaScript — students design and launch real websites by the end of the course.</p>
+        <div class="course-meta">
+          <span class="tag">Ages 12–17</span>
+          <span class="tag">Beginner → Intermediate</span>
+        </div>
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27m%20interested%20in%20the%20Web%20Development%20course." target="_blank" class="course-cta">
+          Enrol now <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="course-card col-p reveal reveal-delay-3">
+        <div class="course-icon ci-p">🤖</div>
+        <h3>Robotics</h3>
+        <p>Hands-on engineering with real hardware. Students code and build robots that respond to their commands.</p>
+        <div class="course-meta">
+          <span class="tag">Ages 8–15</span>
+          <span class="tag">All levels</span>
+        </div>
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27m%20interested%20in%20the%20Robotics%20course." target="_blank" class="course-cta">
+          Enrol now <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="course-card col-b reveal reveal-delay-1">
+        <div class="course-icon ci-b">🧠</div>
+        <h3>Artificial Intelligence</h3>
+        <p>Machine learning concepts made accessible — students build simple AI models and understand how tech shapes the world.</p>
+        <div class="course-meta">
+          <span class="tag">Ages 13–17</span>
+          <span class="tag">Intermediate</span>
+        </div>
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27m%20interested%20in%20the%20AI%20course." target="_blank" class="course-cta">
+          Enrol now <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="course-card col-o reveal reveal-delay-2">
+        <div class="course-icon ci-o">🐱</div>
+        <h3>Scratch Programming</h3>
+        <p>The perfect intro to coding — drag-and-drop storytelling and games that spark creativity in young learners.</p>
+        <div class="course-meta">
+          <span class="tag">Ages 6–11</span>
+          <span class="tag">Beginner</span>
+        </div>
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27m%20interested%20in%20the%20Scratch%20course." target="_blank" class="course-cta">
+          Enrol now <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="course-card col-m reveal reveal-delay-3">
+        <div class="course-icon ci-m">📱</div>
+        <h3>App Development</h3>
+        <p>Design and ship mobile apps — students learn UI thinking and publish their own app ideas.</p>
+        <div class="course-meta">
+          <span class="tag">Ages 13–17</span>
+          <span class="tag">Intermediate</span>
+        </div>
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27m%20interested%20in%20the%20App%20Development%20course." target="_blank" class="course-cta">
+          Enrol now <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="course-card col-p reveal reveal-delay-1">
+        <div class="course-icon ci-p">🔐</div>
+        <h3>Cybersecurity Basics</h3>
+        <p>How the internet really works, what hackers do, and how to stay safe — essential knowledge for every young digital citizen.</p>
+        <div class="course-meta">
+          <span class="tag">Ages 12–17</span>
+          <span class="tag">Beginner</span>
+        </div>
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27m%20interested%20in%20the%20Cybersecurity%20course." target="_blank" class="course-cta">
+          Enrol now <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <div class="course-card col-b reveal reveal-delay-2">
+        <div class="course-icon ci-b">🎮</div>
+        <h3>Game Development</h3>
+        <p>Students design and build their own 2D games — combining creativity with core programming principles.</p>
+        <div class="course-meta">
+          <span class="tag">Ages 10–16</span>
+          <span class="tag">Beginner → Intermediate</span>
+        </div>
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27m%20interested%20in%20the%20Game%20Development%20course." target="_blank" class="course-cta">
+          Enrol now <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── CLUBS ── -->
+  <section id="clubs">
+    <div class="clubs-glow"></div>
+    <div class="clubs-inner">
+      <div class="clubs-text reveal">
+        <div class="section-eyebrow">// school clubs</div>
+        <h2 class="section-title">Bring the <span class="accent" style="color:var(--purple)">tech club</span><br>to your school.</h2>
+        <p class="section-sub">We partner with schools to run certified, curriculum-aligned tech clubs — giving students structured learning right on campus.</p>
+        <div class="clubs-features">
+          <div class="club-feature">
+            <div class="club-feature-icon">🏫</div>
+            <div class="club-feature-text">
+              <h4>On-campus sessions</h4>
+              <p>We come to your school. No commuting, no extra logistics for parents.</p>
+            </div>
+          </div>
+          <div class="club-feature">
+            <div class="club-feature-icon">📜</div>
+            <div class="club-feature-text">
+              <h4>Certified instructors</h4>
+              <p>All sessions are led by trained, vetted tech educators.</p>
+            </div>
+          </div>
+          <div class="club-feature">
+            <div class="club-feature-icon">🏆</div>
+            <div class="club-feature-text">
+              <h4>Competitions & showcases</h4>
+              <p>Students get to demo projects and compete in national tech challenges.</p>
+            </div>
+          </div>
+        </div>
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20partner%20with%20Creative%20Minds%20Resource%20to%20start%20a%20school%20club." target="_blank" class="btn-primary" style="margin-top:36px; width:fit-content;">
+          Partner with us →
+        </a>
+      </div>
+      <div class="clubs-card reveal reveal-delay-2">
+        <div class="clubs-card-title">Club Programs</div>
+        <div class="clubs-card-sub">Pick one or run them all — we tailor to your school's needs.</div>
+        <div class="clubs-programs">
+          <div class="cp-item">🤖 <span>Robotics Club</span></div>
+          <div class="cp-item">🧠 <span>AI & ML Club</span></div>
+          <div class="cp-item">🌐 <span>Web Dev Club</span></div>
+          <div class="cp-item">🐍 <span>Python Club</span></div>
+          <div class="cp-item">🐱 <span>Scratch Club</span></div>
+          <div class="cp-item">📱 <span>App Dev Club</span></div>
+          <div class="cp-item">🔐 <span>Cyber Club</span></div>
+          <div class="cp-item">🎮 <span>Game Dev Club</span></div>
+        </div>
+        <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20learn%20more%20about%20starting%20a%20school%20club." target="_blank" class="btn-primary" style="width:100%; justify-content:center;">
+          Start a club at your school
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section id="about">
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="section-eyebrow">// our story</div>
+        <h2 class="section-title">Built to close the<br>tech skills gap.</h2>
+        <p class="section-sub">Across Nigeria, America, the UK, and Canada — we believe every child deserves a seat at the table of the tech-driven future.</p>
+
+        <div class="mission-block" style="margin-top:32px;">
+          <div class="section-eyebrow">Mission</div>
+          <h3>Make tech education accessible, exciting, and impactful for every young mind.</h3>
+          <p>We don't just teach code. We nurture curiosity, build problem-solving instincts, and prepare kids to thrive in a world increasingly shaped by technology.</p>
+        </div>
+
+        <div class="countries-block">
+          <h4>Where we operate</h4>
+          <div class="country-list">
+            <div class="country-item"><span class="flag-e">🇳🇬</span> Nigeria</div>
+            <div class="country-item"><span class="flag-e">🇺🇸</span> United States of America</div>
+            <div class="country-item"><span class="flag-e">🇬🇧</span> United Kingdom</div>
+            <div class="country-item"><span class="flag-e">🇨🇦</span> Canada</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal reveal-delay-2">
+        <div class="values-grid">
+          <div class="value-card">
+            <div class="vi">🎯</div>
+            <h4>Practical Learning</h4>
+            <p>Every concept is tied to a real project students build and keep.</p>
+          </div>
+          <div class="value-card">
+            <div class="vi">🌍</div>
+            <h4>Global Perspective</h4>
+            <p>Our curriculum reflects tech trends across four continents.</p>
+          </div>
+          <div class="value-card">
+            <div class="vi">🤝</div>
+            <h4>Community First</h4>
+            <p>School clubs, peer mentoring, and showcase events keep kids connected.</p>
+          </div>
+          <div class="value-card">
+            <div class="vi">🚀</div>
+            <h4>Future Ready</h4>
+            <p>We teach skills that matter today — and those that will matter in 10 years.</p>
+          </div>
+          <div class="value-card">
+            <div class="vi">💡</div>
+            <h4>Creative Thinking</h4>
+            <p>Coding is a medium for ideas — we encourage invention, not just execution.</p>
+          </div>
+          <div class="value-card">
+            <div class="vi">👩‍🏫</div>
+            <h4>Expert Instructors</h4>
+            <p>All our educators are trained professionals who love working with young people.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── REGISTER / CONTACT ── -->
+  <section id="register">
+    <div class="reg-glow"></div>
+    <div class="reg-inner">
+
+      <div class="reg-info reveal">
+        <div class="section-eyebrow">// get started</div>
+        <h2 class="section-title">Ready to enrol<br>your child?</h2>
+        <p class="section-sub">Fill in the form and we'll be in touch via WhatsApp to confirm the right course, schedule, and pricing.</p>
+        <div class="contact-items">
+          <a href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20register%20for%20a%20class%20at%20Creative%20Minds%20Resource." target="_blank" class="contact-item">
+            <div class="ci-ico ci-wa">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.121.553 4.112 1.522 5.844L.057 23.882l6.19-1.623A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.366l-.359-.213-3.724.976.995-3.635-.234-.374A9.818 9.818 0 1112 21.818z"/></svg>
+            </div>
+            <div>
+              <h4>WhatsApp</h4>
+              <p>+234 913 358 7919</p>
+            </div>
+          </a>
+          <a href="mailto:creative@gmail.com" class="contact-item">
+            <div class="ci-ico ci-em">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B9BFF" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <h4>Email us</h4>
+              <p>creative@gmail.com</p>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <div class="reg-form reveal reveal-delay-2">
+        <h3>Register for a class</h3>
+        <p class="sub">We'll send you course details and next steps on WhatsApp.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Child's Name</label>
+            <input type="text" id="childName" placeholder="e.g. Amara Johnson" />
+          </div>
+          <div class="form-group">
+            <label>Age</label>
+            <input type="number" id="childAge" placeholder="e.g. 12" min="5" max="18" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Parent / Guardian Name</label>
+          <input type="text" id="parentName" placeholder="Your full name" />
+        </div>
+        <div class="form-group">
+          <label>Course of Interest</label>
+          <select id="courseSelect">
+            <option value="">Select a course…</option>
+            <option value="Python Programming">Python Programming</option>
+            <option value="Web Development">Web Development</option>
+            <option value="Robotics">Robotics</option>
+            <option value="Artificial Intelligence">Artificial Intelligence</option>
+            <option value="Scratch Programming">Scratch Programming</option>
+            <option value="App Development">App Development</option>
+            <option value="Cybersecurity Basics">Cybersecurity Basics</option>
+            <option value="Game Development">Game Development</option>
+            <option value="School Club">School Club Partnership</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Country</label>
+          <select id="countrySelect">
+            <option value="">Select your country…</option>
+            <option>Nigeria</option>
+            <option>United States</option>
+            <option>United Kingdom</option>
+            <option>Canada</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <button class="btn-submit" id="submitBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.121.553 4.112 1.522 5.844L.057 23.882l6.19-1.623A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.366l-.359-.213-3.724.976.995-3.635-.234-.374A9.818 9.818 0 1112 21.818z"/></svg>
+          Send to WhatsApp
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="nav-logo">
+          <div class="nav-logo-icon">&lt;/&gt;</div>
+          Creative Minds Resource
+        </div>
+        <p>Raising the next generation of builders, creators, and innovators — one line of code at a time.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Programs</h5>
+        <ul>
+          <li><a href="#courses">Python</a></li>
+          <li><a href="#courses">Web Dev</a></li>
+          <li><a href="#courses">Robotics</a></li>
+          <li><a href="#courses">AI & ML</a></li>
+          <li><a href="#courses">Scratch</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#clubs">School Clubs</a></li>
+          <li><a href="#register">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="https://wa.me/2349133587919" target="_blank">WhatsApp Us</a></li>
+          <li><a href="mailto:creative@gmail.com">creative@gmail.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Creative Minds Resource. All rights reserved.</p>
+      <p>Built with <span>♥</span> for future tech leaders</p>
+    </div>
+  </footer>
+
+  <!-- ── WHATSAPP FLOAT ── -->
+  <a class="wa-float" href="https://wa.me/2349133587919?text=Hi%2C%20I%27d%20like%20to%20know%20more%20about%20Creative%20Minds%20Resource." target="_blank" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.121.553 4.112 1.522 5.844L.057 23.882l6.19-1.623A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.002-1.366l-.359-.213-3.724.976.995-3.635-.234-.374A9.818 9.818 0 1112 21.818z"/></svg>
+    <span class="wa-tooltip">Chat with us</span>
+  </a>
+
+  <!-- ── SCRIPTS ── -->
+  <script>
+    // ── PRELOADER
+    window.addEventListener('load', () => {
+      const left = document.getElementById('preLeft');
+      const right = document.getElementById('preRight');
+      const logo = document.getElementById('preLogo');
+      const tag = document.getElementById('preTag');
+      const bar = document.getElementById('preBar');
+
+      setTimeout(() => {
+        left.classList.add('show');
+        right.classList.add('show');
+      }, 100);
+      setTimeout(() => logo.classList.add('show'), 200);
+      setTimeout(() => tag.classList.add('show'), 300);
+      setTimeout(() => bar.classList.add('go'), 250);
+
+      setTimeout(() => {
+        document.getElementById('preloader').classList.add('hidden');
+      }, 2000);
+    });
+
+    // ── HAMBURGER
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+    });
+    document.querySelectorAll('.mob-link').forEach(l => {
+      l.addEventListener('click', () => mobileMenu.classList.remove('open'));
+    });
+
+    // ── TYPEWRITER
+    const lines = [
+      'print("Hello, Future Developer")',
+      'const dream = "build something real"',
+      'robot.move(forward, 100)',
+      '<code>Think. Create. Build.</code>',
+      'if curious: keep_learning()',
+    ];
+    let lineIdx = 0, charIdx = 0, deleting = false;
+    const typed = document.getElementById('typed-text');
+
+    function type() {
+      const current = lines[lineIdx];
+      if (!deleting) {
+        typed.textContent = current.slice(0, ++charIdx);
+        if (charIdx === current.length) {
+          deleting = true;
+          setTimeout(type, 1800);
+          return;
+        }
+      } else {
+        typed.textContent = current.slice(0, --charIdx);
+        if (charIdx === 0) {
+          deleting = false;
+          lineIdx = (lineIdx + 1) % lines.length;
+        }
+      }
+      setTimeout(type, deleting ? 40 : 70);
+    }
+    setTimeout(type, 2200);
+
+    // ── SCROLL REVEAL
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    reveals.forEach(r => observer.observe(r));
+
+    // ── REGISTER FORM → WHATSAPP
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      const child   = document.getElementById('childName').value.trim();
+      const age     = document.getElementById('childAge').value.trim();
+      const parent  = document.getElementById('parentName').value.trim();
+      const course  = document.getElementById('courseSelect').value;
+      const country = document.getElementById('countrySelect').value;
+
+      if (!child || !parent || !course || !country) {
+        alert('Please fill in all fields before continuing.');
+        return;
+      }
+
+      const msg = encodeURIComponent(
+        `Hi! I'd like to register for a class at Creative Minds Resource.\n\n` +
+        `👤 Child's Name: ${child}\n` +
+        `🎂 Age: ${age || 'not provided'}\n` +
+        `🧑‍🦱 Parent/Guardian: ${parent}\n` +
+        `📚 Course: ${course}\n` +
+        `🌍 Country: ${country}\n\n` +
+        `Please share details on next steps. Thank you!`
+      );
+      window.open(`https://wa.me/2349133587919?text=${msg}`, '_blank');
+    });
+  </script>
+</body>
+</html>
